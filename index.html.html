@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR CODE</title>
+    <link rel="shortcut icon" href="th.jpeg" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1"><link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR CODE</title>
+    <link rel="shortcut icon" href="th.jpeg" type="image/x-icon">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(56deg, #f51a1a 0%, #d6cbf6 46%, #05f2e2 100%);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        body h2 {
+            box-shadow: 0px 0px 14px -7px #f019ec;
+            background: linear-gradient(56deg, #61dafb 0%, #d6cbf6 46%, #f20505 100%);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        input {
+            width: 50%;
+            padding: 10px;
+            margin: 10px 0;
+            border-color: #1fcdbf;
+            border-style: dotted;
+            font-size: 1em;
+        }
+        button {
+            background: linear-gradient(56deg, #61dafb 0%, #d6cbf6 23%, #f20505 50%);
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            color: #000000;
+            padding: 15px 20px;
+            border: 0;
+            border-radius: 10px;
+            box-shadow: 0px 0px 14px -7px #f09819;
+            background-size: 200% auto;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            transition: 0.5s;
+            font-size: 1em;
+        }
+        canvas {
+            margin-top: 20px;
+            border-style: double;
+            border-color: #f20505;
+            padding-top: 10px;
+            max-width: 100%;
+            height: auto;
+        }
+        .wrapper {
+            display: inline-flex;
+            list-style: none;
+            margin-top: 20px;
+        }
+        .pl {
+            margin-top: 20px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            body h2 {
+                font-size: 1.5em;
+                padding: 8px;
+            }
+            input {
+                width: 80%;
+                font-size: 0.9em;
+            }
+            button {
+                padding: 12px 18px;
+                font-size: 0.9em;
+            }
+            canvas {
+                width: 150px;
+                height: 150px;
+            }
+            .wrapper {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .wrapper .icon {
+                margin: 5px;
+            }
+            .pl {
+                width: 80px;
+                height: 80px;
+            }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            input {
+                width: 60%;
+            }
+            canvas {
+                width: 180px;
+                height: 180px;
+            }
+        }
+        @media (min-width: 1025px) {
+            input {
+                width: 50%;
+            }
+            canvas {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+    <style>
+        * {
+            border: 0;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --hue: 223;
+            --bg: hsl(var(--hue),90%,90%);
+            --fg: hsl(var(--hue),90%,10%);
+            --trans-dur: 0.3s;
+            font-size: calc(16px + (24 - 16) * (100vw - 320px) / (2560 - 320));
+        }
+        body {
+            background-color: aliceblue;
+            color: var(--fg);
+            display: flex;
+            font: 1em/1.5 sans-serif;
+            transition: background-color var(--trans-dur), color var(--trans-dur);
+        }
+        .pl {
+            display: block;
+            margin: auto;
+            width: 16em;
+            height: auto;
+        }
+        .pl line {
+            animation-duration: 3s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+        .pl__line1, .pl__line9 {
+            animation-name: line1;
+        }
+        .pl__line2, .pl__line8 {
+            animation-name: line2;
+        }
+        .pl__line3, .pl__line7 {
+            animation-name: line3;
+        }
+        .pl__line4, .pl__line6 {
+            animation-name: line4;
+        }
+        .pl__line5 {
+            animation-name: line5;
+        }
+
+        /* Dark theme */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: hsl(var(--hue),90%,10%);
+                --fg: hsl(var(--hue),90%,90%);
+            }
+        }
+
+        /* Animations */
+        @keyframes line1 {
+            from, 8% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            18% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            28% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            38% {
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            48% {
+                opacity: 1;
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            53% {
+                opacity: 0;
+                stroke-dashoffset: 31.99;
+                transform: translate(8px,16px);
+            }
+            56% {
+                animation-timing-function: steps(1,start);
+                opacity: 0;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            60% {
+                animation-timing-function: ease-out;
+                opacity: 1;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            70% {
+                animation-timing-function: ease-in-out;
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            80% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            90% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            to {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+        }
+        @keyframes line2 {
+            from, 6% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            16% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            26% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            36% {
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            46% {
+                opacity: 1;
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            51% {
+                opacity: 0;
+                stroke-dashoffset: 31.99;
+                transform: translate(8px,16px);
+            }
+            54% {
+                animation-timing-function: steps(1,start);
+                opacity: 0;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            58% {
+                animation-timing-function: ease-out;
+                opacity: 1;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            68% {
+                animation-timing-function: ease-in-out;
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            78% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            88% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            98%, to {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+        }
+        @keyframes line3 {
+            from, 4% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            14% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            24% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            34% {
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            44% {
+                opacity: 1;
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            49% {
+                opacity: 0;
+                stroke-dashoffset: 31.99;
+                transform: translate(8px,16px);
+            }
+            52% {
+                animation-timing-function: steps(1,start);
+                opacity: 0;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            56% {
+                animation-timing-function: ease-out;
+                opacity: 1;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            66% {
+                animation-timing-function: ease-in-out;
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            76% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            86% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            96%, to {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+        }
+        @keyframes line4 {
+            from, 2% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            12% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            22% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            32% {
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            42% {
+                opacity: 1;
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            47% {
+                opacity: 0;
+                stroke-dashoffset: 31.99;
+                transform: translate(8px,16px);
+            }
+            50% {
+                animation-timing-function: steps(1,start);
+                opacity: 0;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            54% {
+                animation-timing-function: ease-out;
+                opacity: 1;
+                stroke-dashoffset: 32;
+                transform: translate(0,16px);
+            }
+            64% {
+                animation-timing-function: ease-in-out;
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            74% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            84% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            94%, to {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+        }
+        @keyframes line5 {
+            from {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            10% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            20% {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            30% {
+                stroke-dashoffset: 0;
+                transform: translate(0,0);
+            }
+            40% {
+                stroke-dashoffset: -16;
+                transform: translate(0,15px);
+            }
+            50% {
+                stroke-dashoffset: -31;
+                transform: translate(0,-48px);
+            }
+            58% {
+                stroke-dashoffset: -31;
+                transform: translate(0,8px);
+            }
+            65% {
+                stroke-dashoffset: -31.99;
+                transform: translate(0,-24px);
+            }
+            71.99% {
+                animation-timing-function: steps(1);
+                stroke-dashoffset: -31.99;
+                transform: translate(0,-16px);
+            }
+            72% {
+                animation-timing-function: ease-in-out;
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+            82% {
+                stroke-dashoffset: 16;
+                transform: translate(0,8px);
+            }
+            92%, to {
+                stroke-dashoffset: 31.99;
+                transform: translate(0,16px);
+            }
+        }
+    </style>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus, *:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            display: grid;
+            height: 100%;
+            width: 100%;
+            font-family: "Poppins", sans-serif;
+            place-items: center;
+            background: linear-gradient(56deg, #ff0f0f 0%, #d6cbf6 46%, #05f2de 100%);
+        }
+
+        .wrapper {
+            display: inline-flex;
+            list-style: none;
+        }
+
+        .wrapper .icon {
+            position: relative;
+            background: linear-gradient(56deg, #61dafb 0%, #d6cbf6 46%, #f20505 100%);
+            border-radius: 50%;
+            padding: 15px;
+            margin: 10px;
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .wrapper .tooltip {
+            position: absolute;
+            top: 0;
+            font-size: 14px;
+            background: #ffffff;
+            color: #ffffff;
+            padding: 5px 8px;
+            border-radius: 5px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .wrapper .tooltip::before {
+            position: absolute;
+            content: "";
+            height: 8px;
+            width: 8px;
+            background: #ffffff;
+            bottom: -3px;
+            left: 50%;
+            transform: translate(-50%) rotate(45deg);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .wrapper .icon:hover .tooltip {
+            top: -45px;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .wrapper .icon:hover span, .wrapper .icon:hover .tooltip {
+            text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .wrapper .facebook:hover, .wrapper .facebook:hover .tooltip, .wrapper .facebook:hover .tooltip::before {
+            background: #1877F2;
+            color: #ffffff;
+        }
+
+        .wrapper .twitter:hover, .wrapper .twitter:hover .tooltip, .wrapper .twitter:hover .tooltip::before {
+            background: #1DA1F2;
+            color: #ffffff;
+        }
+
+        .wrapper .instagram:hover, .wrapper .instagram:hover .tooltip, .wrapper .instagram:hover .tooltip::before {
+            background: #E4405F;
+            color: #ffffff;
+        }
+
+        .wrapper .github:hover, .wrapper .github:hover .tooltip, .wrapper .github:hover .tooltip::before {
+            background: #333333;
+            color: #ffffff;
+        }
+
+        .wrapper .youtube:hover, .wrapper .youtube:hover .tooltip, .wrapper .youtube:hover .tooltip::before {
+            background: #CD201F;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h2>Generateur des QR codes</h2>
+    <input type="text" id="text" placeholder="Entrez un lien ou un texte pour creé le qr code">
+    <button onclick="generateQRCode()">Générer QR Code</button>
+    <br>
+    <canvas id="qrcode"></canvas>
+
+    <script>
+        function generateQRCode() {
+            var qr = new QRious({
+                element: document.getElementById('qrcode'),
+                value: document.getElementById('text').value,
+                size: 200
+            });
+        }
+    </script>
+<ul class="wrapper">
+      <a href="https://web.facebook.com/taha.chafii/">
+        <li class="icon facebook">
+          <span class="tooltip">Facebook</span>
+          <span><i class="fab fa-facebook-f"></i></span>
+        </li>
+      </a>
+      <a href="https://x.com/imane4418397869">
+        <li class="icon twitter">
+          <span class="tooltip">Twitter</span>
+          <span><i class="fab fa-twitter"></i></span>
+        </li>
+      </a>
+      <a href="https://www.instagram.com/ch__taha__/">
+          <li class="icon instagram">
+            <span class="tooltip">Instagram</span>
+            <span><i class="fab fa-instagram"></i></span>
+          </li>
+      </a>
+      <a href="https://github.com/tahachafii">
+        <li class="icon github">
+          <span class="tooltip">Github</span>
+          <span><i class="fab fa-github"></i></span>
+        </li>
+      </a>
+      <a href="https://www.youtube.com/@tahachafii2850">
+        <li class="icon youtube">
+          <span class="tooltip">Youtube</span>
+          <span><i class="fab fa-youtube"></i></span>
+        </li>
+      </a>
+      </ul>
+        <script  src="./script.js"></script>
+        <svg class="pl" viewBox="0 0 128 128" width="128px" height="128px">
+          <defs>
+            <linearGradient id="pl-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#000" />
+              <stop offset="100%" stop-color="#fff" />
+            </linearGradient>
+            <mask id="pl-mask">
+              <rect x="0" y="0" width="128" height="128" fill="url(#pl-grad)" />
+            </mask>
+          </defs>
+          <g stroke-linecap="round" stroke-width="8" stroke-dasharray="32 32">
+            <g stroke="hsl(193,90%,50%)">
+              <line class="pl__line1" x1="4" y1="48" x2="4" y2="80" />
+              <line class="pl__line2" x1="19" y1="48" x2="19" y2="80" />
+              <line class="pl__line3" x1="34" y1="48" x2="34" y2="80" />
+              <line class="pl__line4" x1="49" y1="48" x2="49" y2="80" />
+              <line class="pl__line5" x1="64" y1="48" x2="64" y2="80" />
+              <g transform="rotate(180,79,64)">
+                <line class="pl__line6" x1="79" y1="48" x2="79" y2="80" />
+              </g>
+              <g transform="rotate(180,94,64)">
+                <line class="pl__line7" x1="94" y1="48" x2="94" y2="80" />
+              </g>
+              <g transform="rotate(180,109,64)">
+                <line class="pl__line8" x1="109" y1="48" x2="109" y2="80" />
+              </g>
+              <g transform="rotate(180,124,64)">
+                <line class="pl__line9" x1="124" y1="48" x2="124" y2="80" />
+              </g>
+            </g>
+            <g stroke="hsl(283,90%,50%)" mask="url(#pl-mask)">
+              <line class="pl__line1" x1="4" y1="48" x2="4" y2="80" />
+              <line class="pl__line2" x1="19" y1="48" x2="19" y2="80" />
+              <line class="pl__line3" x1="34" y1="48" x2="34" y2="80" />
+              <line class="pl__line4" x1="49" y1="48" x2="49" y2="80" />
+              <line class="pl__line5" x1="64" y1="48" x2="64" y2="80" />
+              <g transform="rotate(180,79,64)">
+                <line class="pl__line6" x1="79" y1="48" x2="79" y2="80" />
+              </g>
+              <g transform="rotate(180,94,64)">
+                <line class="pl__line7" x1="94" y1="48" x2="94" y2="80" />
+              </g>
+              <g transform="rotate(180,109,64)">
+                <line class="pl__line8" x1="109" y1="48" x2="109" y2="80" />
+              </g>
+              <g transform="rotate(180,124,64)">
+                <line class="pl__line9" x1="124" y1="48" x2="124" y2="80" />
+              </g>
+            </g>
+          </g>
+        </svg>
+</body>
+</html>
